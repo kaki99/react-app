@@ -1,2 +1,2 @@
 # react-app
-react-app sample
+## react-app sample
