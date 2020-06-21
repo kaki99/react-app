@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import Content from "./components/Content"
 import Subject from "./components/Subject"
 import TOC from "./components/TOC"
+import Control from "./components/Control"
+import ReadContent from "./components/ReadContent"
+import CreateContent from "./components/CreateContent"
 import './App.css';
 
 class App extends Component {
@@ -22,43 +24,52 @@ class App extends Component {
   }
   render() {
     console.log("App render");
-    var _title, _desc = null;
+    var _title, _desc, _article = null;
     if (this.state.mode === "welcome") {
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
     } else if (this.state.mode === "read") {
       var i = 0;
-      while(i < this.state.contents.length) {
+      while (i < this.state.contents.length) {
         var data = this.state.contents[i];
-        if(data.id === this.state.selected_content_id) {
+        if (data.id === this.state.selected_content_id) {
           _title = data.title;
           _desc = data.desc;
           break;
         }
         i++;
       }
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
+    } else if (this.state.mode === "create") {
+      _article = <CreateContent></CreateContent>
     }
     console.log('render', this)
     return (
       <div className="App">
-        <Subject 
-          title={this.state.subject.title} 
+        <Subject
+          title={this.state.subject.title}
           sub={this.state.subject.desc}
-          onChangePage={function(){
-            this.setState({mode: "welcome"});
+          onChangePage={function () {
+            this.setState({ mode: "welcome" });
             // debugger;
           }.bind(this)}>
         </Subject>
         <h2>{this.state.subject.desc}</h2>
-        <TOC onChangePage={function(id){
-            this.setState({
-              mode: "read",
-              selected_content_id: Number(id)
-            });
-          }.bind(this)}
+        <TOC onChangePage={function (id) {
+          this.setState({
+            mode: "read",
+            selected_content_id: Number(id)
+          });
+        }.bind(this)}
           data={this.state.contents}>
         </TOC>
-        <Content title={_title} desc={_desc}></Content>
+        <Control onChangeMode={function (_mode) {
+          this.setState({
+            mode: _mode
+          })
+        }.bind(this)}></Control>
+        {_article}
       </div>
     );
   }
